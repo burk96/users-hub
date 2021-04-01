@@ -1,25 +1,18 @@
 const BASE_URL = "https://jsonplace-univclone.herokuapp.com";
 
 function renderUser(user) {
-  const name = user.name;
-  const username = user.username;
-  const email = user.email;
-  const companyName = user.company.name;
-  const companyCreed = user.company.catchPhrase;
-  const companyBS = user.company.bs;
-
   const element = $(`<div class="user-card">
     <header>
-      <h2>${name}</h2>
+      <h2>${user.name}</h2>
     </header>
     <section class="company-info">
-      <p><b>Contact:</b> ${email}</p>
-      <p><b>Works for:</b> ${companyName}</p>
-      <p><b>Company creed:</b> "${companyCreed}, which will ${companyBS}!"</p>
+      <p><b>Contact:</b> ${user.email}</p>
+      <p><b>Works for:</b> ${user.company.name}</p>
+      <p><b>Company creed:</b> "${user.company.catchPhrase}, which will ${user.company.bs}!"</p>
     </section>
     <footer>
-      <button class="load-posts">POSTS BY ${username}</button>
-      <button class="load-albums">ALBUMS BY ${username}</button>
+      <button class="load-posts">POSTS BY ${user.username}</button>
+      <button class="load-albums">ALBUMS BY ${user.username}</button>
     </footer>
   </div>`);
 
@@ -39,7 +32,7 @@ function renderUserList(userList) {
 
 /* render a single album */
 function renderAlbum(album) {
-  let element = $(`<div class="album-card">
+  const element = $(`<div class="album-card">
     <header>
       <h3>${album.title}, by ${album.user.username} </h3>
     </header>
@@ -58,14 +51,12 @@ function renderAlbum(album) {
 
 /* render a single photo */
 function renderPhoto(photo) {
-  let element = $(`<div class="photo-card">
+  return `<div class="photo-card">
     <a href="${photo.url}" target="_blank">
       <img src="${photo.thumbnailUrl}">
       <figure>${photo.title}</figure>
     </a>
-  </div>`);
-
-  return element;
+  </div>`;
 }
 
 /* render an array of albums */
@@ -105,10 +96,6 @@ function fetchUserAlbumList(userId) {
 function bootstrap() {
   fetchUsers().then(function (data) {
     renderUserList(data);
-  });
-
-  fetchUserAlbumList(1).then(function (albumList) {
-    renderAlbumList(albumList);
   });
 }
 
