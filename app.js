@@ -71,7 +71,7 @@ function renderAlbumList(albumList) {
 }
 
 function renderPost(post) {
-  let element = $(`<div class="post-card">
+  const element = $(`<div class="post-card">
     <header>
       <h3>${post.title}</h3>
       <h3>--- ${post.user.username}</h3>
@@ -186,7 +186,7 @@ $("#post-list").on("click", ".post-card .toggle-comments", function () {
     .then(function (post) {
       commentList.empty();
       post.comments.forEach(function (comment) {
-        commentList.append(`<h3>${comment.body} --- ${comment.email}</h3>`);
+        commentList.prepend(`<h3>${comment.body} --- ${comment.email}</h3>`);
       });
 
       toggleComments(postCardElement);
