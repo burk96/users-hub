@@ -1,5 +1,8 @@
 const BASE_URL = "https://jsonplace-univclone.herokuapp.com";
 
+// pagination snippet
+//_page=1&_limit=20
+
 function renderUser(user) {
   const element = $(`<div class="user-card">
     <header>
@@ -134,6 +137,28 @@ function setCommentsOnPost(post) {
   });
 }
 
+function setAlbumListOnUser(user) {
+  if (user.albumList) {
+    return Promise.resolve(user);
+  }
+
+  return fetchUserAlbumList(user.id).then(function (albumList) {
+    user.albumList = albumList;
+    return user;
+  });
+}
+
+function setPostsOnUser(user) {
+  if (user.posts) {
+    return Promise.resolve(user);
+  }
+
+  return fetchUserPosts(user.id).then(function (posts) {
+    user.posts = posts;
+    return user;
+  });
+}
+
 function fetchData(url) {
   return fetch(url)
     .then(function (response) {
@@ -164,17 +189,23 @@ function bootstrap() {
 }
 
 $("#user-list").on("click", ".user-card .load-posts", function () {
-  const parent = $(this).closest(".user-card").data("user");
-  fetchUserPosts(parent.id).then(function (postList) {
-    renderPostList(postList);
-  });
+  const user = $(this).closest(".user-card").data("user");
+
+  setPostsOnUser(user)
+    .then(function (user) {
+      renderPostList(user.posts);
+    })
+    .catch(console.error);
 });
 
 $("#user-list").on("click", ".user-card .load-albums", function () {
-  const parent = $(this).closest(".user-card").data("user");
-  fetchUserAlbumList(parent.id).then(function (albumList) {
-    renderAlbumList(albumList);
-  });
+  const user = $(this).closest(".user-card").data("user");
+
+  setAlbumListOnUser(user)
+    .then(function (user) {
+      renderAlbumList(user.albumList);
+    })
+    .catch(console.error);
 });
 
 $("#post-list").on("click", ".post-card .toggle-comments", function () {
